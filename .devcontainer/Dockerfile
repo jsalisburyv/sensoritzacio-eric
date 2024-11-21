@@ -8,6 +8,10 @@ RUN sudo apt update && sudo apt upgrade -y
 # Install essential packages
 RUN sudo apt install -y wget
 
+# RUN sudo apt-get update \
+#     && sudo apt-get install ros-jazzy-webots-ros2 \
+#     && rm -rf /var/lib/apt/lists/*
+
 # Create overlay workspace
 WORKDIR /root/ros_ws/src
 COPY packages.repos .
