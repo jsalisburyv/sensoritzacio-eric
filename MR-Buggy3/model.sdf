@@ -1,6 +1,6 @@
 <sdf version="1.8">
   <model name="MR-Buggy3">
-    <pose>0 0 .04 0 0 0</pose>
+    <pose>0 0 0.08 0 0 0</pose> <!-- Original: 0 0 .04 0 0 0 -->
     <self_collide>false</self_collide>
     <static>false</static>
     <link name="MR-Buggy3/Base">
@@ -17,23 +17,25 @@
         </inertia>
       </inertial>
       <visual name="MR-Buggy3/BaseVisual">
-        <pose>.1371 0 -.0115 -0.018 0 1.5707</pose>
+        <pose>0.2742 0 -0.023 -0.036 0 1.5707</pose> <!-- Original: .1371 0 -.0115 -0.018 0 1.5707 -->
         <geometry>
           <mesh>
+            <scale>2 2 2</scale>
             <uri>model://MR-Buggy3/meshes/BaseReduced.dae</uri>
           </mesh>
         </geometry>
       </visual>
       <visual name="MR-Buggy3/TopVisual">
-        <pose>.1371 0 -.0115 -0.018 0 1.5707</pose>
+        <pose>0.2742 0 -0.023 -0.036 0 1.5707</pose> <!-- Original: .1371 0 -.0115 -0.018 0 1.5707 -->
         <geometry>
           <mesh>
+            <scale>2 2 2</scale>
             <uri>model://MR-Buggy3/meshes/TopReduced.dae</uri>
           </mesh>
         </geometry>
       </visual>
       <collision name="MR-Buggy3/BaseCollision">
-        <pose>0 0 .06 0 0 0</pose>
+        <pose>0 0 0.12 0 0 0</pose> <!-- Original: 0 0 .06 0 0 0 -->
         <geometry>
           <box>
             <size>.3 .09 .12</size>
@@ -79,6 +81,7 @@
         <pose>0 0 0 0 0 0</pose>
         <geometry>
           <mesh>
+            <scale>2 2 2</scale>
             <uri>model://MR-Buggy3/meshes/Wheel.dae</uri>
           </mesh>
         </geometry>
@@ -132,6 +135,7 @@
         <pose>0 0 0 0 0 3.14159</pose>
         <geometry>
           <mesh>
+            <scale>2 2 2</scale>
             <uri>model://MR-Buggy3/meshes/Wheel.dae</uri>
           </mesh>
         </geometry>
@@ -185,6 +189,7 @@
         <pose>0 0 0 0 0 0</pose>
         <geometry>
           <mesh>
+            <scale>2 2 2</scale>
             <uri>model://MR-Buggy3/meshes/Wheel.dae</uri>
           </mesh>
         </geometry>
@@ -227,6 +232,7 @@
         <pose>0 0 0 0 0 3.14159</pose>
         <geometry>
           <mesh>
+            <scale>2 2 2</scale>
             <uri>model://MR-Buggy3/meshes/Wheel.dae</uri>
           </mesh>
         </geometry>
@@ -253,7 +259,7 @@
     <joint name="MR-Buggy3/FrontRightWheelSteeringJoint" type="revolute">
       <parent>MR-Buggy3/Base</parent>
       <child>MR-Buggy3/FrontRightWheelSteering</child>
-      <pose relative_to="MR-Buggy3/Base">.112 -.10 0 0 0 0</pose>
+      <pose relative_to="MR-Buggy3/Base">0.224 -0.2 0 0 0 0</pose> 
       <axis>
         <xyz>0 0 1</xyz>
         <limit>
@@ -285,7 +291,7 @@
     <joint name="MR-Buggy3/FrontLeftWheelSteeringJoint" type="revolute">
       <parent>MR-Buggy3/Base</parent>
       <child>MR-Buggy3/FrontLeftWheelSteering</child>
-      <pose relative_to="MR-Buggy3/Base">.112 .10 0 0 0 0</pose>
+      <pose relative_to="MR-Buggy3/Base">0.224 0.2 0 0 0 0</pose>
       <axis>
         <xyz>0 0 1</xyz>
         <limit>
@@ -317,7 +323,7 @@
     <joint name="MR-Buggy3/RearRightWheelJoint" type="revolute">
       <parent>MR-Buggy3/Base</parent>
       <child>MR-Buggy3/RearRightWheel</child>
-      <pose relative_to="MR-Buggy3/Base">-.1135 -.10 0 0 0 0</pose>
+      <pose relative_to="MR-Buggy3/Base">-0.227 -0.2 0 0 0 0</pose>
       <axis>
         <xyz>0 1 0</xyz>
         <limit>
@@ -334,7 +340,7 @@
     <joint name="MR-Buggy3/RearLeftWheelJoint" type="revolute">
       <parent>MR-Buggy3/Base</parent>
       <child>MR-Buggy3/RearLeftWheel</child>
-      <pose relative_to="MR-Buggy3/Base">-.1135 .10 0 0 0 0</pose>
+      <pose relative_to="MR-Buggy3/Base">-0.227 0.2 0 0 0 0</pose>
       <axis>
         <xyz>0 1 0</xyz>
         <limit>

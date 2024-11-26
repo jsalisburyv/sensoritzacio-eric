@@ -3,38 +3,23 @@
   <model name="beach">
     <static>true</static>
     <link name="base_link">
+      <!-- Collision Element -->
       <collision name="sand_collision">
-        <pose>0 -792.8 3.04 0 0 0</pose>
+        <pose>15 7 0 0 0 0</pose> <!-- Positioned at X=15, Y=0 -->
         <geometry>
           <box>
-            <size>5900 1600 1</size>
+            <size>50 50 0.5</size> <!-- Flat collision box with height close to zero -->
           </box>
         </geometry>
       </collision>
-      <collision name="sand_slope_collision">
-        <pose>1.25 12.0 1.31 -0.34 0 0</pose>
-        <geometry>
-          <box>
-            <size>5900 10.55 1</size>
-          </box>
-        </geometry>
-      </collision>
-      <collision name="sand_wet_collision">
-        <pose>0 20.725 -0.3 -0.04 0 0</pose>
-        <geometry>
-          <box>
-            <size>5900 20.0 1</size>
-          </box>
-        </geometry>
-      </collision>
+
+      <!-- Sand Visual -->
       <visual name="Sand_visual">
+        <pose>15 7 0 0 0 0</pose> <!-- Positioned at X=15, Y=7 -->
         <geometry>
           <mesh>
             <uri>meshes/beach.dae</uri>
-            <submesh>
-              <name>Sand</name>
-              <center>false</center>
-            </submesh>
+            <scale>0.0085 0.0085 0.0085</scale> <!-- Scaled for 50x50 -->
           </mesh>
         </geometry>
         <material>
@@ -46,16 +31,19 @@
               <normal_map>materials/textures/Sand_Normal.jpg</normal_map>
             </metal>
           </pbr>
+          <texture>
+            <scale>50 50</scale> <!-- Adjust texture tiling to match dimensions -->
+          </texture>
         </material>
       </visual>
+
+      <!-- Beach Visual -->
       <visual name="Beach_visual">
+        <pose>15 7 0 0 0 0</pose> <!-- Positioned at X=15, Y=7 -->
         <geometry>
           <mesh>
             <uri>meshes/beach.dae</uri>
-            <submesh>
-              <name>Beach</name>
-              <center>false</center>
-            </submesh>
+            <scale>0.0085 0.0085 0.0085</scale> <!-- Scaled for 50x50 -->
           </mesh>
         </geometry>
         <material>
@@ -68,70 +56,9 @@
               <roughness_map>materials/textures/Beach_Roughness.jpg</roughness_map>
             </metal>
           </pbr>
-        </material>
-      </visual>
-      <visual name="Bush_visual">
-        <geometry>
-          <mesh>
-            <uri>meshes/beach.dae</uri>
-            <submesh>
-              <name>Bush</name>
-              <center>false</center>
-            </submesh>
-          </mesh>
-        </geometry>
-        <material>
-          <diffuse>1.0 1.0 1.0</diffuse>
-          <specular>1.0 1.0 1.0</specular>
-          <pbr>
-            <metal>
-              <albedo_map>materials/textures/Bush_Albedo.png</albedo_map>
-            </metal>
-          </pbr>
-        </material>
-      </visual>
-      <visual name="Coral_visual">
-        <geometry>
-          <mesh>
-            <uri>meshes/beach.dae</uri>
-            <submesh>
-              <name>Coral</name>
-              <center>false</center>
-            </submesh>
-          </mesh>
-        </geometry>
-        <material>
-          <diffuse>1.0 1.0 1.0</diffuse>
-          <specular>1.0 1.0 1.0</specular>
-          <pbr>
-            <metal>
-              <albedo_map>materials/textures/Coral_Albedo.jpg</albedo_map>
-              <normal_map>materials/textures/Coral_Normal.jpg</normal_map>
-              <roughness_map>materials/textures/Coral_Roughness.jpg</roughness_map>
-            </metal>
-          </pbr>
-        </material>
-      </visual>
-      <visual name="Moss_visual">
-        <geometry>
-          <mesh>
-            <uri>meshes/beach.dae</uri>
-            <submesh>
-              <name>Moss</name>
-              <center>false</center>
-            </submesh>
-          </mesh>
-        </geometry>
-        <material>
-          <diffuse>1.0 1.0 1.0</diffuse>
-          <specular>1.0 1.0 1.0</specular>
-          <pbr>
-            <metal>
-              <albedo_map>materials/textures/Moss_Albedo.jpg</albedo_map>
-              <normal_map>materials/textures/Moss_Normal.jpg</normal_map>
-              <roughness_map>materials/textures/Moss_Roughness.jpg</roughness_map>
-            </metal>
-          </pbr>
+          <texture>
+            <scale>50 50</scale> <!-- Adjust texture tiling to match dimensions -->
+          </texture>
         </material>
       </visual>
     </link>
