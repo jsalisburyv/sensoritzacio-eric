@@ -1,8 +1,7 @@
 <?xml version="1.0" ?>
 <sdf version="1.10">
-    <world name="car_world">
+    <world name="beach_world">
         <physics name="1ms" type="ode">
-            <gravity>0 0 -9.8</gravity>
             <max_step_size>0.001</max_step_size>
             <real_time_factor>1.0</real_time_factor>
         </physics>
@@ -42,5 +41,64 @@
             model://MR-Buggy3
             </uri>
         </include>
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Beer</uri>
+      <name>can_1</name>
+      <pose>1.0 -3.5 1 0 0 0</pose>
+    </include>
+    
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Beer</uri>
+      <name>can_2</name>
+      <pose>3.5 2.5 1 0 0 0</pose>
+    </include>
+    
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Beer</uri>
+      <name>can_3</name>
+      <pose>6.0 -2.0 1 0 0 0</pose>
+    </include>
+    
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Beer</uri>
+      <name>can_4</name>
+      <pose>8.5 3.0 1 0 0 0</pose>
+    </include>
+    
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Beer</uri>
+      <name>can_5</name>
+      <pose>11.0 -4.0 1 0 0 0</pose>
+    </include>
+    
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Beer</uri>
+      <name>can_6</name>
+      <pose>13.5 2.0 1 0 0 0</pose>
+    </include>
+    
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Beer</uri>
+      <name>can_7</name>
+      <pose>16.0 -1.5 1 0 0 0</pose>
+    </include>
+    
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Beer</uri>
+      <name>can_8</name>
+      <pose>18.5 3.5 1 0 0 0</pose>
+    </include>
+    
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Beer</uri>
+      <name>can_9</name>
+      <pose>20.0 -3.0 1 0 0 0</pose>
+    </include>
+    
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Beer</uri>
+      <name>can_10</name>
+      <pose>19.0 1.0 1 0 0 0</pose>
+    </include>
     </world>
 </sdf>
