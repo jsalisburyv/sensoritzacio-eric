@@ -12,6 +12,13 @@ RUN sudo apt install -y wget
 #     && sudo apt-get install ros-jazzy-webots-ros2 \
 #     && rm -rf /var/lib/apt/lists/*
 
+RUN apt-get update && apt-get install -y wget gnupg \
+    && wget https://packages.osrfoundation.org/gazebo.key -O - | apt-key add - \
+    && sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list' \
+    && apt-get update
+RUN sudo apt-get install -y libgz-transport13-dev python3-gz-transport13
+#     && sudo apt clean
+
 # Create overlay workspace
 WORKDIR /root/ros_ws/src
 COPY packages.repos .
