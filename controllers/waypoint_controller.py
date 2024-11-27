@@ -1,4 +1,5 @@
 import time
+from model_deleter import ModelDeleter
 from gz.transport13 import Node
 from gz.msgs10.twist_pb2 import Twist
 from gz.msgs10.pose_v_pb2 import Pose_V
@@ -9,6 +10,7 @@ import json
 
 class WaypointFollower:
     def __init__(self):
+        self.deleter = ModelDeleter()
         self.node = Node()
         self.publisher = self.node.advertise("/cmd_vel", Twist)
         self.pose_subscriber = self.node.subscribe(msg_type=Pose_V, topic="/world/beach_world/pose/info", callback=self.pose_callback)
@@ -50,19 +52,7 @@ class WaypointFollower:
                     distance = self.euclidean_distance(self.current_position, model_position)
                     if distance < 0.2:  # Collision threshold
                         print(f"Collision detected with {model_name}. Removing it...")
-                        self.remove_model(model_name)
-
-    def remove_model(self, model_name):
-        """
-        Publishes a message to remove the specified model.
-        """
-        msg = Entity()
-        msg.name = model_name
-        self.remove_publisher.publish(msg)
-        print(f"Published removal request for model: {model_name}")
-        # Remove from local dictionary
-        if model_name in self.models:
-            del self.models[model_name]
+                        self.deleter.delete_model(model_name)
 
     def find_optimal_path(self, start, waypoints):
         """
