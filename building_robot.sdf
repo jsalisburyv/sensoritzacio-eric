@@ -36,11 +36,11 @@
             model://Beach
             </uri>
         </include>
-        <include>
-            <uri>
-            model://MR-Buggy3
-            </uri>
-        </include>
+<include>
+<uri>
+model://pioneer3at
+</uri>
+</include>
     <include>
       <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Coke Can</uri>
       <name>can_1</name>

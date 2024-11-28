@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<sdf version="1.6">
+  <model name="beach">
+    <static>true</static>
+    <link name="base_link">
+      <!-- Collision Element -->
+      <collision name="sand_collision">
+        <pose>15 7 0 0 0 0</pose> <!-- Positioned at X=15, Y=0 -->
+        <geometry>
+          <box>
+            <size>50 50 0.5</size> <!-- Flat collision box with height close to zero -->
+          </box>
+        </geometry>
+      </collision>
+
+      <!-- Sand Visual -->
+      <visual name="Sand_visual">
+        <pose>15 7 0 0 0 0</pose> <!-- Positioned at X=15, Y=7 -->
+        <geometry>
+          <mesh>
+            <uri>meshes/beach.dae</uri>
+            <scale>0.0085 0.0085 0.0085</scale> <!-- Scaled for 50x50 -->
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>1.0 1.0 1.0</diffuse>
+          <specular>0.7 0.7 0.7</specular>
+          <pbr>
+            <metal>
+              <albedo_map>materials/textures/Sand_Albedo.jpg</albedo_map>
+              <normal_map>materials/textures/Sand_Normal.jpg</normal_map>
+            </metal>
+          </pbr>
+          <texture>
+            <scale>50 50</scale> <!-- Adjust texture tiling to match dimensions -->
+          </texture>
+        </material>
+      </visual>
+
+      <!-- Beach Visual -->
+      <visual name="Beach_visual">
+        <pose>15 7 0 0 0 0</pose> <!-- Positioned at X=15, Y=7 -->
+        <geometry>
+          <mesh>
+            <uri>meshes/beach.dae</uri>
+            <scale>0.0085 0.0085 0.0085</scale> <!-- Scaled for 50x50 -->
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>1.0 1.0 1.0</diffuse>
+          <specular>0.8 0.8 0.8</specular>
+          <pbr>
+            <metal>
+              <albedo_map>materials/textures/Beach_Albedo.jpg</albedo_map>
+              <normal_map>materials/textures/Beach_Normal.jpg</normal_map>
+              <roughness_map>materials/textures/Beach_Roughness.jpg</roughness_map>
+            </metal>
+          </pbr>
+          <texture>
+            <scale>50 50</scale> <!-- Adjust texture tiling to match dimensions -->
+          </texture>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>
