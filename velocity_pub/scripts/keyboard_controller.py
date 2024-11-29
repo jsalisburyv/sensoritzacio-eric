@@ -4,15 +4,15 @@ import math
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Float64MultiArray
-import sys
-import termios
-import tty
+import json
+import numpy as np
 
-class InteractiveKeyboardController(Node):
+
+class WaypointFollower(Node):
     def __init__(self):
-        super().__init__('keyboard_controller')
+        super().__init__('waypoint_follower')
 
-        # Create publishers for custom topics
+        # Publishers for controlling the robot
         self.pub_pos = self.create_publisher(Float64MultiArray, '/forward_position_controller/commands', 10)
         self.pub_vel = self.create_publisher(Float64MultiArray, '/forward_velocity_controller/commands', 10)
 
@@ -24,46 +24,67 @@ class InteractiveKeyboardController(Node):
         self.steering_track = self.wheel_separation - 2 * self.wheel_steering_y_offset
 
         # Control variables
-        self.linear_speed = 20 # Speed for forward/backward motion
-        self.angular_speed = 10  # Speed for turning
+        self.linear_speed = 20  # Speed for forward/backward motion (same as keyboard controller)
+        self.angular_speed = 10  # Speed for turning (same as keyboard controller)
         self.vel_msg = {'linear_x': 0.0, 'linear_y': 0.0, 'angular_z': 0.0}
-        self.mode_selection = 4  # Default: None (1: opposite phase, 2: in-phase, 3: pivot turn, 4: stop)
+        self.mode_selection = 4  # Default mode (stop)
 
         # Current control values
-        self.positions = [0.0, 0.0, 0.0, 0.0]  # Position commands
-        self.velocities = [0.0, 0.0, 0.0, 0.0]  # Velocity commands
+        self.positions = [0.0, 0.0, 0.0, 0.0]
+        self.velocities = [0.0, 0.0, 0.0, 0.0]
 
-        # Display instructions
-        self.print_instructions()
+        # Waypoints
+        with open('cans.json', 'r') as file:
+            data = json.load(file)
+        self.models = {can['name']: can['position'][:2] for can in data['cans']}
+        self.get_logger().info(f"Loaded models: {self.models}")
 
-    def print_instructions(self):
-        self.get_logger().info("Interactive Keyboard Controller Initialized!")
-        self.get_logger().info("Use W/A/S/D to control the robot, SPACE to stop, and Q to quit.")
-        self.get_logger().info("[W]: Forward  [S]: Backward  [A]: Turn Left  [D]: Turn Right")
-        self.get_logger().info("[SPACE]: Stop  [Q]: Quit")
+        self.start_position = [0.0, 0.0]
+        self.waypoints = list(self.models.values())
+        self.optimized_path = self.find_optimal_path(self.start_position, self.waypoints)
+        self.get_logger().info(f"Optimized path: {self.optimized_path}")
+
+        # State variables
+        self.current_index = 0
+        self.current_position = np.array([0.0, 0.0])  # Initial position
+        self.current_orientation = 0.0  # Initial orientation
+
+        # Timer for navigation
+        self.timer = self.create_timer(0.1, self.navigate_to_waypoint)
+
+    def find_optimal_path(self, start, waypoints):
+        """Compute the optimal path visiting all waypoints starting from the given position."""
+        from itertools import permutations
+        min_cost = float('inf')
+        best_path = []
+
+        for perm in permutations(waypoints):
+            cost = self.compute_path_cost(start, perm)
+            if cost < min_cost:
+                min_cost = cost
+                best_path = perm
+
+        return best_path
+
+    def compute_path_cost(self, start, waypoints):
+        """Compute the total distance for visiting all waypoints in the given order."""
+        total_cost = 0
+        current_pos = start
+
+        for waypoint in waypoints:
+            total_cost += self.euclidean_distance(current_pos, waypoint)
+            current_pos = waypoint
+
+        return total_cost
+
+    @staticmethod
+    def euclidean_distance(a, b):
+        """Compute Euclidean distance between two points."""
+        return math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2)
 
     def compute_wheel_commands(self):
         """Compute wheel velocities and positions based on the selected mode and velocities."""
-        if self.mode_selection == 1:  # Opposite phase
-            vel_steering_offset = self.vel_msg['angular_z'] * self.wheel_steering_y_offset
-            sign = math.copysign(1, self.vel_msg['linear_x'])
-
-            self.velocities[0] = sign * math.hypot(self.vel_msg['linear_x'] - self.vel_msg['angular_z'] * self.steering_track / 2,
-                                                   self.vel_msg['angular_z'] * self.wheel_base / 2) - vel_steering_offset
-            self.velocities[1] = sign * math.hypot(self.vel_msg['linear_x'] + self.vel_msg['angular_z'] * self.steering_track / 2,
-                                                   self.vel_msg['angular_z'] * self.wheel_base / 2) + vel_steering_offset
-            self.velocities[2] = self.velocities[0]
-            self.velocities[3] = self.velocities[1]
-
-            a0 = 2 * self.vel_msg['linear_x'] + self.vel_msg['angular_z'] * self.steering_track
-            a1 = 2 * self.vel_msg['linear_x'] - self.vel_msg['angular_z'] * self.steering_track
-
-            self.positions[0] = math.atan(self.vel_msg['angular_z'] * self.wheel_base / a0) if a0 != 0 else 0.0
-            self.positions[1] = math.atan(self.vel_msg['angular_z'] * self.wheel_base / a1) if a1 != 0 else 0.0
-            self.positions[2] = -self.positions[0]
-            self.positions[3] = -self.positions[1]
-
-        elif self.mode_selection == 2:  # In-phase
+        if self.mode_selection == 2:  # In-phase (default for navigation)
             V = math.hypot(self.vel_msg['linear_x'], self.vel_msg['linear_y'])
             sign = math.copysign(1, self.vel_msg['linear_x'])
 
@@ -94,74 +115,51 @@ class InteractiveKeyboardController(Node):
         self.pub_pos.publish(pos_msg)
         self.pub_vel.publish(vel_msg)
 
-    def get_key(self):
-        """Gets a single key press from the user."""
-        fd = sys.stdin.fileno()
-        old_settings = termios.tcgetattr(fd)
-        try:
-            tty.setraw(fd)
-            key = sys.stdin.read(1)
-        finally:
-            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-        return key
-
-    def run(self):
-        """Main loop to listen for key presses and control the robot."""
-        try:
-            while True:
-                key = self.get_key().lower()
-
-                if key == 'w':  # Forward
-                    self.vel_msg['linear_x'] = self.linear_speed
-                    self.mode_selection = 2
-
-                elif key == 's':  # Backward
-                    self.vel_msg['linear_x'] = -self.linear_speed
-                    self.mode_selection = 2
-
-                elif key == 'a':  # Turn Left
-                    self.vel_msg['angular_z'] = self.angular_speed
-                    self.mode_selection = 3
-
-                elif key == 'd':  # Turn Right
-                    self.vel_msg['angular_z'] = -self.angular_speed
-                    self.mode_selection = 3
-
-                elif key == ' ':  # Stop
-                    self.vel_msg = {'linear_x': 0.0, 'linear_y': 0.0, 'angular_z': 0.0}
-                    self.mode_selection = 4
-
-                elif key == 'q':  # Quit
-                    self.get_logger().info("Quitting. Stopping the robot.")
-                    self.vel_msg = {'linear_x': 0.0, 'linear_y': 0.0, 'angular_z': 0.0}
-                    self.mode_selection = 4
-                    self.compute_wheel_commands()
-                    self.publish_commands()
-                    break
-
-                else:
-                    self.get_logger().info("Invalid key! Use W/A/S/D/SPACE/Q.")
-
-                # Compute wheel commands and publish
-                self.compute_wheel_commands()
-                self.publish_commands()
-
-        except KeyboardInterrupt:
-            self.get_logger().info("\nExiting controller.")
-            self.vel_msg = {'linear_x': 0.0, 'linear_y': 0.0, 'angular_z': 0.0}
-            self.mode_selection = 4
+    def navigate_to_waypoint(self):
+        """Main navigation logic to move the robot towards the next waypoint."""
+        if self.current_index >= len(self.optimized_path):
+            self.get_logger().info("All waypoints reached!")
+            self.mode_selection = 4  # Stop
             self.compute_wheel_commands()
             self.publish_commands()
+            return
+
+        # Current target waypoint
+        goal = self.optimized_path[self.current_index]
+        dx = goal[0] - self.current_position[0]
+        dy = goal[1] - self.current_position[1]
+        distance = math.sqrt(dx ** 2 + dy ** 2)
+        angle_to_goal = math.atan2(dy, dx)
+
+        # Angular error
+        angle_error = angle_to_goal - self.current_orientation
+        angle_error = (angle_error + math.pi) % (2 * math.pi) - math.pi
+
+        # Move toward the waypoint
+        if distance > 0.2:  # Threshold for reaching the waypoint
+            self.vel_msg['linear_x'] = self.linear_speed
+            self.vel_msg['angular_z'] = max(-self.angular_speed, min(self.angular_speed, angle_error * 2))
+            self.mode_selection = 2  # In-phase mode
+        else:
+            self.get_logger().info(f"Reached waypoint {self.current_index + 1}: {goal}")
+            self.current_index += 1
+            self.vel_msg = {'linear_x': 0.0, 'linear_y': 0.0, 'angular_z': 0.0}
+            self.mode_selection = 4  # Stop mode
+
+        self.compute_wheel_commands()
+        self.publish_commands()
+
 
 def main(args=None):
     rclpy.init(args=args)
-    controller = InteractiveKeyboardController()
+    waypoint_follower = WaypointFollower()
 
     try:
-        controller.run()
+        rclpy.spin(waypoint_follower)
     finally:
-        controller.destroy_node()
+        waypoint_follower.destroy_node()
         rclpy.shutdown()
 
-if __name__ == "__main__":
+
+if __name__ == '__main__':
     main()

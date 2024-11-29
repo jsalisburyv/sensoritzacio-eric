@@ -18,66 +18,74 @@
       <shadows>true</shadows>
     </scene>
     <include>
-      <uri>file://fws_robot_sim/worlds/Beach/model.sdf</uri>
+      <uri>file://fws_robot_sim/worlds/water/model.sdf </uri>
+      <pose>0 0 2.45 0 0 0</pose>
+    </include>
+    <include>
+      <uri>file://fws_robot_sim/worlds/nathan_benderson_park/model.sdf</uri>
+    </include>
+    <include>
+      <uri>file://fws_robot_sim/worlds/MR-Buggy3/model.sdf</uri>
+      <pose>-340 0 4.5 0 0 -1.65</pose>
     </include>
     <include>
       <uri>file://fws_robot_sim/worlds/coke_can/model.sdf</uri>
       <name>can_1</name>
-      <pose>1.0 -3.5 1 0 0 0</pose>
+      <pose>-340.0 -10 4.5 0 0 0</pose>
     </include>
     
     <include>
       <uri>file://fws_robot_sim/worlds/coke_can/model.sdf</uri>
       <name>can_2</name>
-      <pose>3.5 2.5 1 0 0 0</pose>
+      <pose>-340 -12 4.5 0 0 0</pose>
     </include>
     
     <include>
       <uri>file://fws_robot_sim/worlds/coke_can/model.sdf</uri>
       <name>can_3</name>
-      <pose>6.0 -2.0 1 0 0 0</pose>
+      <pose>-338 -5 4.5 0 0 0</pose>
     </include>
     
     <include>
       <uri>file://fws_robot_sim/worlds/coke_can/model.sdf</uri>
       <name>can_4</name>
-      <pose>8.5 3.0 1 0 0 0</pose>
+      <pose>-339 -3 4.5 0 0 0</pose>
     </include>
     
     <include>
       <uri>file://fws_robot_sim/worlds/coke_can/model.sdf</uri>
       <name>can_5</name>
-      <pose>11.0 -4.0 1 0 0 0</pose>
+      <pose>-340 -8 4.5 0 0 0</pose>
     </include>
     
     <include>
       <uri>file://fws_robot_sim/worlds/coke_can/model.sdf</uri>
       <name>can_6</name>
-      <pose>13.5 2.0 1 0 0 0</pose>
+      <pose>-344 -6 4.5 0 0 0</pose>
     </include>
     
     <include>
       <uri>file://fws_robot_sim/worlds/coke_can/model.sdf</uri>
       <name>can_7</name>
-      <pose>16.0 -1.5 1 0 0 0</pose>
+      <pose>-344 -10 4.5 0 0 0</pose>
     </include>
     
     <include>
       <uri>file://fws_robot_sim/worlds/coke_can/model.sdf</uri>
       <name>can_8</name>
-      <pose>18.5 3.5 1 0 0 0</pose>
+      <pose>-346 -14 4.5 0 0 0</pose>
     </include>
     
     <include>
       <uri>file://fws_robot_sim/worlds/coke_can/model.sdf</uri>
       <name>can_9</name>
-      <pose>20.0 -3.0 1 0 0 0</pose>
+      <pose>-348 -8 4.5 0 0 0</pose>
     </include>
     
     <include>
       <uri>file://fws_robot_sim/worlds/coke_can/model.sdf</uri>
       <name>can_10</name>
-      <pose>19.0 1.0 1 0 0 0</pose>
+      <pose>-345 -5 4.5 0 0 0</pose>
     </include>
     <model name='ground_plane'>
       <static>true</static>

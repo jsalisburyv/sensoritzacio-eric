@@ -18,8 +18,8 @@ class OdometryBasedController(Node):
         self.wheel_radius = 0.026
         self.wheel_steering_y_offset = 0.03
         self.steering_track = self.wheel_separation - 2 * self.wheel_steering_y_offset
-        self.linear_speed = 200  # Forward speed in meters/second
-        self.angular_speed = 100  # Angular speed in radians/second
+        self.linear_speed = 50  # Forward speed in meters/second
+        self.angular_speed = 25  # Angular speed in radians/second
 
         # Robot state
         self.current_position = 0.0  # Distance traveled (meters)
@@ -59,14 +59,9 @@ class OdometryBasedController(Node):
             self.current_orientation += delta_orientation
             self.current_orientation = math.fmod(self.current_orientation, 2 * math.pi)  # Normalize angle
 
-            # Debugging logs
-            self.get_logger().info(f"Delta Orientation: {delta_orientation:.4f} rad")
-            self.get_logger().info(f"Current Orientation: {self.current_orientation:.4f} rad")
-
         # Update previous wheel positions
         self.prev_left_wheel_pos = left_wheel_pos
         self.prev_right_wheel_pos = right_wheel_pos
-
 
     def move_forward(self, distance):
         """
@@ -98,7 +93,7 @@ class OdometryBasedController(Node):
         Turns the robot by the specified angle in degrees.
         :param angle: The angle to turn in degrees (positive for left, negative for right).
         """
-        target_angle = math.radians(angle * 2)  # Convert target angle to radians
+        target_angle = math.radians(angle)  # Convert target angle to radians
         initial_orientation = self.current_orientation
         self.get_logger().info(f"Turning by {angle} degrees (target angle: {target_angle:.2f} rad).")
 
@@ -115,31 +110,29 @@ class OdometryBasedController(Node):
         else:  # Turn right
             self.velocities = [self.angular_speed, -self.angular_speed, self.angular_speed, -self.angular_speed]
 
-        # Loop until the desired angle is reached
         while rclpy.ok():
-            # Publish velocity and position commands
-            self.publish_commands()
-            rclpy.spin_once(self)
-
             # Check if the target orientation is reached
             angle_turned = self.current_orientation - initial_orientation
-            self.get_logger().info(f"Turned Angle: {math.degrees(angle_turned):.2f} degrees")
             if abs(angle_turned) >= abs(target_angle):
                 self.get_logger().info("Target angle reached.")
                 break
 
+            # Publish velocity and position commands
+            self.publish_commands()
+            rclpy.spin_once(self)
+
         # Stop the robot after reaching the target angle
         self.stop()
+
 
 
     def stop(self):
         """Stops the robot."""
         self.get_logger().info("Stopping the robot.")
         self.velocities = [0.0] * 4
-        self.positions = [0.0] * 4  # Reset wheel steering angles
+        self.positions = [0.0] * 4
         self.publish_commands()
         time.sleep(0.5)  # Allow time for the robot to stop completely
-
 
     def publish_commands(self):
         """Publishes the current position and velocity commands."""
@@ -153,7 +146,7 @@ class OdometryBasedController(Node):
 def main(args=None):
     rclpy.init(args=args)
     controller = OdometryBasedController()
-    x_max = 5
+    x_max = 3
     y_max = 3
     current_row = 0
     try:

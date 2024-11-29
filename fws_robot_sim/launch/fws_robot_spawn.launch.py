@@ -67,22 +67,22 @@ def generate_launch_description():
         parameters=[params]
     )
 
-    gz_spawn_entity = Node(
-        package='ros_gz_sim',
-        executable='create',
-        output='screen',
-        arguments=['-string', robot_desc,
-                   '-x', '0.0',
-                   '-y', '0.0',
-                   '-z', '1.07',
-                   '-R', '0.0',
-                   '-P', '0.0',
-                   '-Y', '0.0',
-                   '-name', 'fws_robot',
-                   '-allow_renaming', 'false',
-                   '-scale', '10.0'  # Add scale argument here
-                ],
-    )
+    # gz_spawn_entity = Node(
+    #     package='ros_gz_sim',
+    #     executable='create',
+    #     output='screen',
+    #     arguments=['-string', robot_desc,
+    #                '-x', '-340.0',
+    #                '-y', '0.0',
+    #                '-z', '4.5',
+    #                '-R', '0.0',
+    #                '-P', '0.0',
+    #                '-Y', '-1.65',
+    #                '-name', 'fws_robot',
+    #                '-allow_renaming', 'false',
+    #                '-scale', '10.0'  # Add scale argument here
+    #             ],
+    # )
 
     load_joint_state_controller = ExecuteProcess(
         cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
@@ -121,12 +121,12 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-        RegisterEventHandler(
-            event_handler=OnProcessExit(
-                target_action=gz_spawn_entity,
-                on_exit=[load_joint_state_controller],
-            )
-        ),
+        # RegisterEventHandler(
+        #     event_handler=OnProcessExit(
+        #         target_action=gz_spawn_entity,
+        #         on_exit=[load_joint_state_controller],
+        #     )
+        # ),
         RegisterEventHandler(
             event_handler=OnProcessExit(
                target_action=load_joint_state_controller,
@@ -138,7 +138,7 @@ def generate_launch_description():
         arguments,
         gazebo,
         node_robot_state_publisher,
-        gz_spawn_entity,
+        # gz_spawn_entity,
         bridge,
         rviz,
     ])
