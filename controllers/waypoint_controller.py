@@ -112,19 +112,21 @@ class WaypointFollower:
         distance = math.sqrt(dx**2 + dy**2)
         angle_to_goal = math.atan2(dy, dx)
 
+
         # Compute the angular error
         angle_error = angle_to_goal - self.current_orientation
         angle_error = (angle_error + math.pi) % (2 * math.pi) - math.pi  # Normalize to [-π, π]
 
         # Control logic
         linear_velocity = 0.5 if distance > 0.1 else 0.0
-        angular_velocity = max(-1.0, min(1.0, 2.0 * angle_error))  # Cap angular velocity
+        angular_velocity = max(-10.0, min(10.0, 2.0 * angle_error))  # Cap angular velocity
 
         # Update waypoint if close enough
-        if distance < 0.1:
+        if distance < 0.2:
             print(f"Reached waypoint {self.current_index + 1}: {goal}")
             self.current_index += 1
 
+        print("current goal: ", goal)
         self.publish_velocity(linear_velocity, angular_velocity)
 
     def publish_velocity(self, linear, angular):
@@ -132,7 +134,7 @@ class WaypointFollower:
         twist.linear.x = linear
         twist.angular.z = angular
         self.publisher.publish(twist)
-        print(f"Published velocity: linear={linear}, angular={angular}")
+        # print(f"Published velocity: linear={linear}, angular={angular}")
 
     def run(self):
         print("Starting waypoint navigation.")
